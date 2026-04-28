@@ -203,150 +203,150 @@ footPosition = [10, -160];
 % end
 drawnow; 
 
-xArr = zeros(1, 1100);
-yArr = zeros(1, 1100);
+% xArr = zeros(1, 1100);
+% yArr = zeros(1, 1100);
+% 
+% index = 1;
 
-index = 1;
+% for x = -180:2:180
+%     for y = -240:2:-40
+%         footPosition = [x, y];
+% 
+%         [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
+%         if isreal(linkX) && isreal(linkY) && ~anynan(linkX) && ~anynan(linkY)
+%             plot(x, y, '*', 'MarkerSize', 1, 'LineWidth', 2, 'Color', "#00FF00", 'MarkerFaceColor', "#00FF00");
+%             hold on;
+%             % 
+%             xArr(index) = x;
+%             yArr(index) = y;
+%             index = index + 1;
+%             % for lineIndex = 1:size(lines, 2)
+%             %     set(lines(lineIndex), 'XData', linkX(lineIndex, :));
+%             %     set(lines(lineIndex), 'YData', linkY(lineIndex, :));
+%             % end
+%             % pause(0.1);
+% 
+%         end
+%     end
+% end
 
-for x = -180:2:180
-    for y = -240:2:-40
+% drawnow; 
+
+
+
+% T = table(transpose(xArr), transpose(yArr));
+
+% writetable(T,'myData.txt','Delimiter',',')  
+% type 'myData.txt'
+% 
+for z = 0:4
+
+    t = linspace(0, 1, 25);
+
+    P = [
+        30 -10;
+        60 -9;
+        75 27;
+        -65 68;
+        -35 -16;
+        -10 -10;
+    ];
+
+    P2 = [
+       -10 -10
+       30 -10
+    ];
+
+    % Make t a column vector
+    t = t(:);
+
+    % Bernstein basis polynomials for n = 5
+    B0 = (1 - t).^5;
+    B1 = 5 * (1 - t).^4 .* t;
+    B2 = 10 * (1 - t).^3 .* t.^2;
+    B3 = 10 * (1 - t).^2 .* t.^3;
+    B4 = 5 * (1 - t)    .* t.^4;
+    B5 = t.^5;
+
+    B10 = (1-t);
+    B11 = t;
+
+    % B0 = (1 - t).^7;
+    % B1 = 7 * (1 - t).^6 .* t;
+    % B2 = 21 * (1 - t).^5 .* t.^2;
+    % B3 = 35 * (1 - t).^4 .* t.^3;
+    % B4 = 35 * (1 - t).^3 .* t.^4;
+    % B5 = 21 * (1 - t).^2 .* t.^5;
+    % B6 = 7 * (1 - t).^1 .* t.^6;
+    % B7 = (t).^7;
+
+
+    % Combine into one matrix
+    basis = [B0 B1 B2 B3 B4 B5];
+
+    basis2 = [B10 B11];
+
+    % Compute curve points
+    B = basis * P;
+
+    B2 = basis2 * P2;
+
+    for row = 1:25
+        x = B(row, 1) - 20;
+        y = B(row, 2) - 155;
+
         footPosition = [x, y];
 
         [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
-        if isreal(linkX) && isreal(linkY) && ~anynan(linkX) && ~anynan(linkY)
-            plot(x, y, '*', 'MarkerSize', 1, 'LineWidth', 2, 'Color', "#00FF00", 'MarkerFaceColor', "#00FF00");
-            hold on;
-            % 
-            xArr(index) = x;
-            yArr(index) = y;
-            index = index + 1;
-            % for lineIndex = 1:size(lines, 2)
-            %     set(lines(lineIndex), 'XData', linkX(lineIndex, :));
-            %     set(lines(lineIndex), 'YData', linkY(lineIndex, :));
-            % end
-            % pause(0.1);
-            
+        for lineIndex = 1:size(lines, 2)
+            set(lines(lineIndex), 'XData', linkX(lineIndex, :));
+            set(lines(lineIndex), 'YData', linkY(lineIndex, :));
         end
+        pause(0.02);
+        drawnow;
     end
+
+    for row = 1:25
+        x = B2(row, 1) - 20;
+        y = B2(row, 2) - 155;
+
+        footPosition = [x, y];
+
+        [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
+        for lineIndex = 1:size(lines, 2)
+            set(lines(lineIndex), 'XData', linkX(lineIndex, :));
+            set(lines(lineIndex), 'YData', linkY(lineIndex, :));
+        end
+        pause(0.04);
+        drawnow;
+    end
+
+
+    % for t = linspace(-15, 70, 30)
+    %     %footPosition = [-t, -0.025*(-t+70)^2-130];
+    %     footPosition = [-t, -0.0221*(t-27.5)^2-120]; %-116.6
+    %     [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
+    % 
+    %     for lineIndex = 1:size(lines, 2)
+    %         set(lines(lineIndex), 'XData', linkX(lineIndex, :));
+    %         set(lines(lineIndex), 'YData', linkY(lineIndex, :));
+    %     end
+    %     pause(0.02);
+    %     drawnow;
+    % end
+    % 
+    % for x = linspace(-48-20, 18-20, 25)
+    %     footPosition = [x, -145];
+    %     [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
+    % 
+    %     for lineIndex = 1:size(lines, 2)
+    %         set(lines(lineIndex), 'XData', linkX(lineIndex, :));
+    %         set(lines(lineIndex), 'YData', linkY(lineIndex, :));
+    %     end
+    %     pause(0.02);
+    %     drawnow;
+    % end
 end
-
-drawnow; 
-
-
-
-T = table(transpose(xArr), transpose(yArr));
-
-writetable(T,'myData.txt','Delimiter',',')  
-type 'myData.txt'
-
-% for z = 0:4
-% 
-%     t = linspace(0, 1, 25);
-% 
-%     P = [
-%         30 -10;
-%         60 -9;
-%         75 27;
-%         -65 68;
-%         -35 -16;
-%         -10 -10;
-%     ];
-% 
-%     P2 = [
-%        -10 -10
-%        30 -10
-%     ]
-% 
-%     % Make t a column vector
-%     t = t(:);
-% 
-%     % Bernstein basis polynomials for n = 5
-%     B0 = (1 - t).^5;
-%     B1 = 5 * (1 - t).^4 .* t;
-%     B2 = 10 * (1 - t).^3 .* t.^2;
-%     B3 = 10 * (1 - t).^2 .* t.^3;
-%     B4 = 5 * (1 - t)    .* t.^4;
-%     B5 = t.^5;
-% 
-%     B10 = (1-t);
-%     B11 = t;
-% 
-%     % B0 = (1 - t).^7;
-%     % B1 = 7 * (1 - t).^6 .* t;
-%     % B2 = 21 * (1 - t).^5 .* t.^2;
-%     % B3 = 35 * (1 - t).^4 .* t.^3;
-%     % B4 = 35 * (1 - t).^3 .* t.^4;
-%     % B5 = 21 * (1 - t).^2 .* t.^5;
-%     % B6 = 7 * (1 - t).^1 .* t.^6;
-%     % B7 = (t).^7;
-% 
-% 
-%     % Combine into one matrix
-%     basis = [B0 B1 B2 B3 B4 B5];
-% 
-%     basis2 = [B10 B11];
-% 
-%     % Compute curve points
-%     B = basis * P;
-% 
-%     B2 = basis2 * P2;
-% 
-%     for row = 1:25
-%         x = B(row, 1) - 20;
-%         y = B(row, 2) - 145;
-% 
-%         footPosition = [x, y];
-% 
-%         [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
-%         for lineIndex = 1:size(lines, 2)
-%             set(lines(lineIndex), 'XData', linkX(lineIndex, :));
-%             set(lines(lineIndex), 'YData', linkY(lineIndex, :));
-%         end
-%         pause(0.02);
-%         drawnow;
-%     end
-% 
-%     for row = 1:25
-%         x = B2(row, 1) - 20;
-%         y = B2(row, 2) - 145;
-% 
-%         footPosition = [x, y];
-% 
-%         [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
-%         for lineIndex = 1:size(lines, 2)
-%             set(lines(lineIndex), 'XData', linkX(lineIndex, :));
-%             set(lines(lineIndex), 'YData', linkY(lineIndex, :));
-%         end
-%         pause(0.04);
-%         drawnow;
-%     end
-% 
-% 
-%     % for t = linspace(-15, 70, 30)
-%     %     %footPosition = [-t, -0.025*(-t+70)^2-130];
-%     %     footPosition = [-t, -0.0221*(t-27.5)^2-120]; %-116.6
-%     %     [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
-%     % 
-%     %     for lineIndex = 1:size(lines, 2)
-%     %         set(lines(lineIndex), 'XData', linkX(lineIndex, :));
-%     %         set(lines(lineIndex), 'YData', linkY(lineIndex, :));
-%     %     end
-%     %     pause(0.02);
-%     %     drawnow;
-%     % end
-%     % 
-%     % for x = linspace(-48-20, 18-20, 25)
-%     %     footPosition = [x, -145];
-%     %     [linkX, linkY] = generatePositions(constLen, varLen, constAng, varAng, motor2, footPosition);
-%     % 
-%     %     for lineIndex = 1:size(lines, 2)
-%     %         set(lines(lineIndex), 'XData', linkX(lineIndex, :));
-%     %         set(lines(lineIndex), 'YData', linkY(lineIndex, :));
-%     %     end
-%     %     pause(0.02);
-%     %     drawnow;
-%     % end
-% end
 
 
 % waitforbuttonpress;
